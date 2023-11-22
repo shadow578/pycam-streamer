@@ -29,7 +29,10 @@ def main():
                     help='Rotate the captured image. Supports angles: 0, 90, 180, 270, -90. Default is 0.', 
                     type=int, 
                     default=0)
-
+    parser.add_argument('-q', '--quality', 
+                    help='JPEG quality for image encoding. Default is 90.', 
+                    type=int, 
+                    default=90)
 
     args = parser.parse_args()
 
@@ -41,6 +44,7 @@ def main():
     print(f'flip_horizontal: {args.flip_horizontal}')
     print(f'flip_vertical: {args.flip_vertical}')
     print(f'rotate: {args.rotate}')
+    print(f'quality: {args.quality}')
 
     ##
     ## Setup Flask + OpenCV
@@ -97,7 +101,7 @@ def main():
                 frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
             # encode the frame as JPEG
-            success, buffer = cv2.imencode('.jpg', frame)
+            success, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), args.quality])
             if not success:
                 raise RuntimeError('Error encoding frame')
 
