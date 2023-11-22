@@ -38,7 +38,10 @@ def main():
                     help='Target framerate for the server. 0 for unlimited. Default is 60.', 
                     type=int, 
                     default=60)
-    
+    parser.add_argument('-mf', '--manual_focus', 
+                    help='manual focus value. use -1 for auto focus. Default is -1.', 
+                    type=int, 
+                    default=-1)
     args = parser.parse_args()
 
     # dump args
@@ -50,7 +53,8 @@ def main():
     print(f'flip_vertical: {args.flip_vertical}')
     print(f'rotate: {args.rotate}')
     print(f'quality: {args.quality}')
-    print(f'framerate: {args.framerate}')
+    print(f'framerate: {args.framerate}'),
+    print(f'manual_focus: {args.manual_focus}')
 
     ##
     ## Setup Flask + OpenCV
@@ -64,6 +68,9 @@ def main():
 
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
+    if not (camera.set(cv2.CAP_PROP_AUTOFOCUS, 0) and camera.set(cv2.CAP_PROP_FOCUS, args.manual_focus)):
+        print("Manual focus not supported on this camera")
 
     ##
     ## Flask Routes
