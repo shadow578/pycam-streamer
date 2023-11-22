@@ -16,6 +16,7 @@ python3 server.py
 
 | Short | Long                | Description                                                                     |
 | ----- | ------------------- | ------------------------------------------------------------------------------- |
+| `-l`  | `--listen`          | Specify the address the server listens on. Default is 0.0.0.0                   |
 | `-p`  | `--port`            | Specify the port number for the server. Default is 8080.                        |
 | `-d`  | `--device`          | Specify the device number as an index for CV2.VideoCapture. Default is 0.       |
 | `-fh` | `--flip_horizontal` | Flip the captured video horizontally. Default is False.                         |

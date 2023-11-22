@@ -5,6 +5,10 @@ import argparse
 def main():
     # parse cli args
     parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--listen",
+                    help="Specify the address the server listens on. Default is 0.0.0.0",
+                    type=str,
+                    default="0.0.0.0")
     parser.add_argument('-p', '--port', 
                     help='Specify the port number for the server. Default is 8080.', 
                     type=int, 
@@ -31,6 +35,7 @@ def main():
 
     # dump args
     print("starting server with the following args:")
+    print(f"listen: {args.listen}")
     print(f'port: {args.port}')
     print(f'device: {args.device}')
     print(f'flip_horizontal: {args.flip_horizontal}')
@@ -108,7 +113,7 @@ def main():
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     # start flask
-    app.run(port=args.port)
+    app.run(host=args.listen, port=args.port)
 
 if __name__ == "__main__":
     main()
