@@ -1,6 +1,7 @@
 from flask import Flask, Response
 import cv2
 import argparse
+import time
 
 def main():
     # parse cli args
@@ -33,7 +34,11 @@ def main():
                     help='JPEG quality for image encoding. Default is 90.', 
                     type=int, 
                     default=90)
-
+    parser.add_argument('-fps', '--framerate', 
+                    help='Target framerate for the server. 0 for unlimited. Default is 60.', 
+                    type=int, 
+                    default=60)
+    
     args = parser.parse_args()
 
     # dump args
@@ -45,6 +50,7 @@ def main():
     print(f'flip_vertical: {args.flip_vertical}')
     print(f'rotate: {args.rotate}')
     print(f'quality: {args.quality}')
+    print(f'framerate: {args.framerate}')
 
     ##
     ## Setup Flask + OpenCV
@@ -82,6 +88,8 @@ def main():
         """
 
         while True:
+            start_time = time.time()
+
             success, frame = camera.read()
             if not success:
                 raise RuntimeError('Error capturing frame')
@@ -115,6 +123,13 @@ def main():
                 # send multiple frames
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                
+            # sleep to maintain target framerate
+            if args.framerate > 0:
+                elapsed_time = time.time() - start_time
+                sleep_time = 1 / args.framerate - elapsed_time
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
 
     # start flask
     app.run(host=args.listen, port=args.port)
