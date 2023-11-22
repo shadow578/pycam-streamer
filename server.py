@@ -70,10 +70,13 @@ def main():
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
     if args.manual_focus >= 0:
-        if not camera.set(cv2.CAP_PROP_AUTOFOCUS, 0):
-            print("Manual focus not supported on this camera")
-            if not camera.set(cv2.CAP_PROP_FOCUS, args.manual_focus):
-                print("failed to set manual focus")
+        if camera.set(cv2.CAP_PROP_AUTOFOCUS, 0):
+            if camera.set(cv2.CAP_PROP_FOCUS, args.manual_focus):
+                print(f"set focus to {args.manual_focus}")
+            else:
+                print("failed to set focus")
+        else:
+            print("failed to disable autofocus")
 
     ##
     ## Flask Routes
